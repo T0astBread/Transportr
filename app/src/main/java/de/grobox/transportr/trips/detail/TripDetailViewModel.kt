@@ -109,7 +109,7 @@ class TripDetailViewModel @Inject internal constructor(
 
         val errorString = getApplication<Application>().getString(R.string.error_trip_refresh_failed)
         val query = TripQuery(from!!, via, to!!, oldTrip.firstDepartureTime, true, oldTrip.products())
-        TripReloader(network.networkProvider, settingsManager, query, trip, errorString, tripReloadError)
+        TripReloader(network.getNetworkProvider(settingsManager.proxy), settingsManager, query, trip, errorString, tripReloadError)
                 .reload()
     }
 

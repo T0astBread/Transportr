@@ -26,7 +26,10 @@ import android.util.Log;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import de.grobox.transportr.networks.TransportNetwork;
+import de.grobox.transportr.settings.SettingsManager;
 import de.schildbach.pte.NetworkProvider;
 import de.schildbach.pte.dto.QueryDeparturesResult;
 
@@ -43,6 +46,9 @@ public class DeparturesLoader extends AsyncTaskLoader<QueryDeparturesResult> {
 	private final Date date;
 	private final int maxDepartures;
 
+	@Inject
+	protected SettingsManager settingsManager;
+
 	public DeparturesLoader(Context context, TransportNetwork network, Bundle args) {
 		super(context);
 
@@ -54,7 +60,7 @@ public class DeparturesLoader extends AsyncTaskLoader<QueryDeparturesResult> {
 
 	@Override
 	public QueryDeparturesResult loadInBackground() {
-		NetworkProvider np = network.getNetworkProvider();
+		NetworkProvider np = network.getNetworkProvider(settingsManager.getProxy());
 
 		Log.d(TAG, "Departures (" + maxDepartures + "): " + stationId);
 		Log.d(TAG, "Date: " + date.toString());

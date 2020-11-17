@@ -193,7 +193,7 @@ class DirectionsViewModel @Inject internal constructor(
         if (network == null) network = getTransportNetwork(NetworkId.DB)
         requireNotNull(network)
         _tripsRepository = TripsRepository(
-            application.applicationContext, network.networkProvider,
+            application.applicationContext, network.getNetworkProvider(settingsManager.proxy),
             settingsManager, locationRepository, searchesRepository
         )
     }

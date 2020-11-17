@@ -47,7 +47,9 @@ import de.grobox.transportr.data.locations.WorkLocation
 import de.grobox.transportr.locations.LocationAdapter.TYPING_THRESHOLD
 import de.grobox.transportr.locations.SuggestLocationsTask.SuggestLocationsTaskCallback
 import de.grobox.transportr.networks.TransportNetwork
+import de.grobox.transportr.settings.SettingsManager
 import de.schildbach.pte.dto.SuggestLocationsResult
+import javax.inject.Inject
 
 open class LocationView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs),
     SuggestLocationsTaskCallback {
@@ -59,6 +61,9 @@ open class LocationView @JvmOverloads constructor(context: Context, attrs: Attri
         private const val AUTO_COMPLETION_DELAY = 300
         private const val SUPER_STATE = "superState"
     }
+
+    @Inject
+    internal lateinit var settingsManager: SettingsManager
 
     private lateinit var adapter: LocationAdapter
     private var task: SuggestLocationsTask? = null
@@ -231,7 +236,7 @@ open class LocationView @JvmOverloads constructor(context: Context, attrs: Attri
         suggestLocationsTaskPending = true
         postDelayed({
             if (task != null && task!!.status != FINISHED) task!!.cancel(true)
-            task = SuggestLocationsTask(transportNetwork!!, this@LocationView)
+            task = SuggestLocationsTask(transportNetwork!!, settingsManager.proxy, this@LocationView)
             task!!.execute(text)
             suggestLocationsTaskPending = false
         }, AUTO_COMPLETION_DELAY.toLong())

@@ -41,7 +41,7 @@ import de.grobox.transportr.settings.SettingsManager.Companion.PROXY_HOST
 import de.grobox.transportr.settings.SettingsManager.Companion.PROXY_PORT
 import de.grobox.transportr.settings.SettingsManager.Companion.PROXY_PROTOCOL
 import de.grobox.transportr.settings.SettingsManager.Companion.THEME
-import de.grobox.transportr.utils.updateGlobalHttpProxy
+import de.grobox.transportr.utils.updateMapBoxProxy
 import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -103,7 +103,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         arrayOf(PROXY_ENABLE, PROXY_HOST, PROXY_PORT, PROXY_PROTOCOL).forEach { prefKey ->
             (findPreference(prefKey) as Preference?)?.let { pref ->
                 pref.setOnPreferenceChangeListener { _, _ ->
-                    updateGlobalHttpProxy(settingsManager.proxy, manager)
+                    updateMapBoxProxy(settingsManager.proxy)
                     true
                 }
             }

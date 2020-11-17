@@ -20,11 +20,16 @@
 package de.grobox.transportr.locations;
 
 import android.os.AsyncTask;
+
+import java.net.Proxy;
+
 import androidx.annotation.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 import de.grobox.transportr.networks.TransportNetwork;
+import de.grobox.transportr.settings.SettingsManager;
 import de.schildbach.pte.NetworkProvider;
 import de.schildbach.pte.dto.SuggestLocationsResult;
 
@@ -32,10 +37,12 @@ import de.schildbach.pte.dto.SuggestLocationsResult;
 class SuggestLocationsTask extends AsyncTask<String, Void, SuggestLocationsResult> {
 
 	private final TransportNetwork network;
+	private final Proxy proxy;
 	private final SuggestLocationsTaskCallback callback;
 
-	SuggestLocationsTask(TransportNetwork network, SuggestLocationsTaskCallback callback) {
+	SuggestLocationsTask(TransportNetwork network, Proxy proxy, SuggestLocationsTaskCallback callback) {
 		this.network = network;
+		this.proxy = proxy;
 		this.callback = callback;
 	}
 
@@ -43,12 +50,12 @@ class SuggestLocationsTask extends AsyncTask<String, Void, SuggestLocationsResul
 	@Override
 	protected SuggestLocationsResult doInBackground(String... strings) {
 		String search = strings[0];
-		if(search.length() < LocationAdapter.TYPING_THRESHOLD) return null;
+		if (search.length() < LocationAdapter.TYPING_THRESHOLD) return null;
 
-		NetworkProvider np = network.getNetworkProvider();
+		NetworkProvider np = network.getNetworkProvider(proxy);
 		try {
 			return np.suggestLocations(search);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

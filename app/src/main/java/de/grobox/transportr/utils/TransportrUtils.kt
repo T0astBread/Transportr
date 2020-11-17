@@ -120,15 +120,9 @@ object TransportrUtils {
 
 fun Location.hasLocation() = hasCoord() && (latAs1E6 != 0 || lonAs1E6 != 0)
 
-fun updateGlobalHttpProxy(newProxy: Proxy, manager: TransportNetworkManager) {
-    // MapBox
+fun updateMapBoxProxy(newProxy: Proxy) {
     HttpRequestUtil.setOkHttpClient(
         OkHttpClient.Builder()
             .proxy(newProxy)
             .build())
-    // public-transport-enabler
-    manager.transportNetwork.value?.let {
-        if (it.networkProvider is AbstractNetworkProvider)
-            (it.networkProvider as AbstractNetworkProvider).setProxy(newProxy)
-    }
 }

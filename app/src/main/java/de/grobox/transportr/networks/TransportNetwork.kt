@@ -24,9 +24,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.google.common.base.Preconditions.checkArgument
 import de.grobox.transportr.R
+import de.schildbach.pte.AbstractNetworkProvider
 import de.schildbach.pte.NetworkId
 import de.schildbach.pte.NetworkProvider
 import java.lang.ref.SoftReference
+import java.net.Proxy
 import javax.annotation.concurrent.Immutable
 
 @Immutable
@@ -45,10 +47,6 @@ data class TransportNetwork internal constructor(
     enum class Status {
         ALPHA, BETA, STABLE
     }
-
-    val networkProvider: NetworkProvider by lazy { networkProviderRef.get() ?: getNetworkProviderReference().get()!! }
-    private val networkProviderRef by lazy { getNetworkProviderReference() }
-    private fun getNetworkProviderReference() = SoftReference<NetworkProvider>(factory.invoke())
 
     init {
         checkArgument(description != 0 || agencies != 0)
@@ -76,6 +74,13 @@ data class TransportNetwork internal constructor(
 
     fun hasGoodLineNames(): Boolean {
         return goodLineNames
+    }
+
+    fun getNetworkProvider(proxy: Proxy): NetworkProvider {
+        val provider = factory()
+        if (provider is AbstractNetworkProvider)
+            provider.setProxy(proxy)
+        return provider
     }
 
     internal fun getItem(): TransportNetworkItem {

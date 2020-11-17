@@ -39,6 +39,7 @@ import de.grobox.transportr.R
 import de.grobox.transportr.locations.NearbyLocationsLoader
 import de.grobox.transportr.locations.WrapLocation
 import de.grobox.transportr.networks.TransportNetwork
+import de.grobox.transportr.settings.SettingsManager
 import de.grobox.transportr.utils.Constants.LOADER_NEARBY_STATIONS
 import de.schildbach.pte.dto.Location
 import de.schildbach.pte.dto.LocationType.STATION
@@ -50,6 +51,9 @@ class MapFragment : GpsMapFragment(), LoaderCallbacks<NearbyLocationsResult>, On
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    internal lateinit var settingsManager: SettingsManager
 
     private lateinit var viewModel: MapViewModel
     private lateinit var nearbyStationsDrawer: NearbyStationsDrawer
@@ -164,7 +168,7 @@ class MapFragment : GpsMapFragment(), LoaderCallbacks<NearbyLocationsResult>, On
     /* Nearby Stations Loader */
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<NearbyLocationsResult> {
-        return NearbyLocationsLoader(context, viewModel.transportNetwork.value, args)
+        return NearbyLocationsLoader(context, viewModel.transportNetwork.value, settingsManager.proxy, args)
     }
 
     override fun onLoadFinished(loader: Loader<NearbyLocationsResult>, result: NearbyLocationsResult?) {

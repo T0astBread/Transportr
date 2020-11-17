@@ -24,9 +24,13 @@ import android.os.Bundle;
 import androidx.loader.content.AsyncTaskLoader;
 import android.util.Log;
 
+import java.net.Proxy;
 import java.util.EnumSet;
 
+import javax.inject.Inject;
+
 import de.grobox.transportr.networks.TransportNetwork;
+import de.grobox.transportr.settings.SettingsManager;
 import de.schildbach.pte.NetworkProvider;
 import de.schildbach.pte.dto.Location;
 import de.schildbach.pte.dto.LocationType;
@@ -40,13 +44,15 @@ public class NearbyLocationsLoader extends AsyncTaskLoader<NearbyLocationsResult
 	private final static String MAX_DISTANCE = "maxDistance";
 
 	private final TransportNetwork network;
+	private final Proxy proxy;
 	private final Location location;
 	private final static EnumSet<LocationType> types = EnumSet.of(LocationType.STATION);
 	private final int maxDistance;
 
-	public NearbyLocationsLoader(Context context, TransportNetwork network, Bundle args) {
+	public NearbyLocationsLoader(Context context, TransportNetwork network, Proxy proxy, Bundle args) {
 		super(context);
 		this.network = network;
+		this.proxy = proxy;
 
 		this.location = (Location) args.getSerializable(LOCATION);
 		this.maxDistance = args.getInt(MAX_DISTANCE);
@@ -54,7 +60,7 @@ public class NearbyLocationsLoader extends AsyncTaskLoader<NearbyLocationsResult
 
 	@Override
 	public NearbyLocationsResult loadInBackground() {
-		NetworkProvider np = network.getNetworkProvider();
+		NetworkProvider np = network.getNetworkProvider(proxy);
 
 		Log.i(TAG, "NearbyStation from (" + String.valueOf(maxDistance) + "): " + location.toString());
 
